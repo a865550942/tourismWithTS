@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../../assets/logo.svg";
 import styles from "./Header.module.css";
 import { Layout, Typography, Input, Menu, Button, Dropdown } from "antd";
@@ -6,20 +6,23 @@ import { GlobalOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "../../redux/hooks";
 import { useDispatch } from "react-redux";
-// import { Dispatch } from "redux";
+import jwt_decode, { JwtPayload as DefaultJwtPayload } from "jwt-decode";
 import {
   LanguageActionTypes,
   addLanguageActionCreator,
   changeLanguageActionCreator,
 } from "../../redux/language/languageActions";
 import { useTranslation } from "react-i18next";
+import { userSlice } from "../../redux/user/slice";
+
+interface JwtPayload extends DefaultJwtPayload {
+  username: string;
+}
 
 export const Header: React.FC = () => {
   let navigate = useNavigate();
-  const language = useSelector((state) => state.languageReducer.language);
-  const languageList = useSelector(
-    (state) => state.languageReducer.languageList
-  );
+  const language = useSelector((state) => state.language.language);
+  const languageList = useSelector((state) => state.language.languageList);
   // const dispatch = useDispatch<Dispatch<LanguageActionTypes>>();
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -31,6 +34,19 @@ export const Header: React.FC = () => {
       const action = changeLanguageActionCreator(e.key);
       dispatch(action);
     }
+  };
+  const jwt = useSelector((s) => s.user.token);
+  const [username, setUsername] = useState("");
+  useEffect(() => {
+    console.log("jwt发生改变");
+    if (jwt) {
+      const token = jwt_decode<JwtPayload>(jwt);
+      setUsername(token.username);
+    }
+  }, [jwt]);
+  const onLogout = () => {
+    dispatch(userSlice.actions.logOut());
+    navigate("/");
   };
 
   return (
@@ -55,22 +71,35 @@ export const Header: React.FC = () => {
           >
             {language === "zh" ? "中文" : "English"}
           </Dropdown.Button>
-          <Button.Group className={styles["button-group"]}>
-            <Button
-              onClick={() => {
-                navigate("/register");
-              }}
-            >
-              {t("header.register")}
-            </Button>
-            <Button
-              onClick={() => {
-                navigate("/signIn");
-              }}
-            >
-              {t("header.signin")}
-            </Button>
-          </Button.Group>
+          {jwt ? (
+            <Button.Group className={styles["button-group"]}>
+              <span>
+                {t("header.welcome")}
+                <Typography.Text strong>{username}</Typography.Text>
+              </span>
+              <Button onClick={() => navigate("./shoppingCart")}>
+                {t("header.shoppingCart")}
+              </Button>
+              <Button onClick={onLogout}>{t("header.signOut")}</Button>
+            </Button.Group>
+          ) : (
+            <Button.Group className={styles["button-group"]}>
+              <Button
+                onClick={() => {
+                  navigate("/register");
+                }}
+              >
+                {t("header.register")}
+              </Button>
+              <Button
+                onClick={() => {
+                  navigate("/signIn");
+                }}
+              >
+                {t("header.signin")}
+              </Button>
+            </Button.Group>
+          )}
         </div>
       </div>
       <Layout.Header className={styles["main-header"]}>
@@ -87,6 +116,10 @@ export const Header: React.FC = () => {
         <Input.Search
           className={styles["search-input"]}
           placeholder="请输入查询关键字"
+          onSearch={(keywords) => {
+            // navigate("/search/" + keywords);
+            navigate(`/search/${keywords}`);
+          }}
         ></Input.Search>
       </Layout.Header>
       <Menu mode={"horizontal"} className={styles["main-menu"]}>

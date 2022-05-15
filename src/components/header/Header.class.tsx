@@ -11,7 +11,7 @@ import {
   addLanguageActionCreator,
   changeLanguageActionCreator,
 } from "../../redux/language/languageActions";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { Dispatch } from "redux";
 
 interface Props {
@@ -34,8 +34,8 @@ function myWithRouter(HeaderComponent) {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    language: state.languageReducer.language,
-    languageList: state.languageReducer.languageList,
+    language: state.language.language,
+    languageList: state.language.languageList,
   };
 };
 
