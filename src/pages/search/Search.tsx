@@ -14,7 +14,8 @@ interface MatchParams {
 }
 
 export const Search: React.FC = () => {
-  const { keywords } = useParams<MatchParams>();
+  // const { keywords } = useParams<MatchParams>();
+  const keywords = useParams<"keywords">();
 
   const loading = useSelector((state) => state.productSearch.loading);
   const error = useSelector((state) => state.productSearch.error);

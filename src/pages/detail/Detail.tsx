@@ -32,24 +32,25 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import { addShoppingCartItem } from "../../redux/shoppingCart/slice";
 const { RangePicker } = DatePicker;
 
-interface MatchParams {
-  touristRouteId: string;
-  // 如果不加这一句就会报matchparam not assignable to type xxx
-  [key: string]: string;
-}
-type MatchParams1 = {
-  touristRouteId: string;
-};
+// interface MatchParams {
+//   touristRouteId: string;
+//   // 不建议该写法
+//   [key: string]: string;
+// }
+// type MatchParams1 = {
+//   touristRouteId: string;
+// };
 
 export const Detail: React.FC = () => {
   // 报错 Type 'MatchParams' does not satisfy the constraint 'string | Record<string, string | undefined>'.
   // Type 'MatchParams' is not assignable to type 'Record<string, string | undefined>'.
   // Index signature for type 'string' is missing in type 'MatchParams'.ts(2344)
-  const { touristRouteId } = useParams<MatchParams>();
+  // const { touristRouteId } = useParams<MatchParams>();
   // 不报错
   // const { touristRouteId } = useParams<{ touristRouteId: string }>();
   // 不报错
   // const { touristRouteId } = useParams<MatchParams1>();
+  const touristRouteId = useParams<"touristId">();
 
   const loading = useSelector((state) => state.productDetail.loading);
   const error = useSelector((state) => state.productDetail.error);
