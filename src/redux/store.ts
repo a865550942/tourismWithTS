@@ -13,6 +13,7 @@ import { productDetailSlice } from './productDetail/slice';
 // toolkit中的combineReducers与redux中的区别在于toolkit中的支持slice中的reducer
 import { combineReducers, configureStore, MiddlewareArray } from '@reduxjs/toolkit';
 import { shoppingCartSlice} from './shoppingCart/slice'
+import { orderSlice } from './order/slice'
 
 const persistConfig = {
     key: 'root',
@@ -29,7 +30,8 @@ const rootReducer = combineReducers({
     productDetail: productDetailSlice.reducer,
     productSearch: productSearchSlice.reducer,
     user: userSlice.reducer,
-    shoppingCart: shoppingCartSlice.reducer
+    shoppingCart: shoppingCartSlice.reducer,
+    order: orderSlice.reducer
 
 })
 const persistedReducer = persistReducer(persistConfig, rootReducer)

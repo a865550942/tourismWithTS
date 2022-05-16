@@ -7,10 +7,12 @@ import {
   Detail,
   Search,
   ShoppingCart,
+  Placeholder,
 } from "./pages";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "./redux/hooks";
+import { useDispatch } from "react-redux";
+import { getShoppingCart } from "./redux/shoppingCart/slice";
 import React from "react";
 
 const PrivateRoute = ({ component, isAuthenticated, ...rest }) => {
@@ -27,6 +29,14 @@ const PrivateRoute = ({ component, isAuthenticated, ...rest }) => {
 
 function App() {
   const jwt = useSelector((s) => s.user.token);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    // 在登录时加载购物车信息
+    if (jwt) {
+      // @ts-ignore
+      dispatch(getShoppingCart(jwt));
+    }
+  }, [jwt]);
   return (
     <div className={styles.App}>
       <BrowserRouter>
@@ -47,8 +57,16 @@ function App() {
             element={
               <PrivateRoute
                 isAuthenticated={jwt !== null}
-                path="/shoppingCart"
                 component={ShoppingCart}
+              />
+            }
+          ></Route>
+          <Route
+            path="/placeOrder"
+            element={
+              <PrivateRoute
+                isAuthenticated={jwt !== null}
+                component={Placeholder}
               />
             }
           ></Route>

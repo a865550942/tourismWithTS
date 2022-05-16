@@ -10,6 +10,7 @@ import {
   Typography,
   Anchor,
   Menu,
+  Button,
 } from "antd";
 import styles from "./Detail.module.css";
 import {
@@ -27,7 +28,8 @@ import { useSelector } from "../../redux/hooks";
 import { useDispatch } from "react-redux";
 import store, { RootDispatch } from "../../redux/store";
 import { MainLayout } from "../../layouts/mainLayout";
-
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import { addShoppingCartItem } from "../../redux/shoppingCart/slice";
 const { RangePicker } = DatePicker;
 
 interface MatchParams {
@@ -53,6 +55,9 @@ export const Detail: React.FC = () => {
   const error = useSelector((state) => state.productDetail.error);
   const product = useSelector((state) => state.productDetail.data);
   const dispatch = useDispatch();
+
+  const jwt = useSelector((s) => s.user.token) as string;
+  const shoppingCartLoading = useSelector((s) => s.shoppingCart.loading);
 
   useEffect(() => {
     // TODO类型报错，可能是版本问题，后面待解决
@@ -97,6 +102,21 @@ export const Detail: React.FC = () => {
             />
           </Col>
           <Col span={11}>
+            <Button
+              style={{ marginTop: 50, marginBottom: 30, display: "block" }}
+              type="primary"
+              danger
+              loading={shoppingCartLoading}
+              onClick={() => {
+                dispatch(
+                  // @ts-ignore
+                  addShoppingCartItem({ jwt, touristRouteId: product.id })
+                );
+              }}
+            >
+              <ShoppingCartOutlined />
+              放入购物车
+            </Button>
             <RangePicker open style={{ marginTop: 20 }} />
           </Col>
         </Row>
