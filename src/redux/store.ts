@@ -12,7 +12,7 @@ import storage from 'redux-persist/lib/storage';
 import { productDetailSlice } from './productDetail/slice';
 // toolkit中的combineReducers与redux中的区别在于toolkit中的支持slice中的reducer
 import { combineReducers, configureStore, MiddlewareArray } from '@reduxjs/toolkit';
-import { shoppingCartSlice} from './shoppingCart/slice'
+import { shoppingCartSlice } from './shoppingCart/slice'
 import { orderSlice } from './order/slice'
 
 const persistConfig = {
@@ -20,7 +20,7 @@ const persistConfig = {
     storage,
     // 白名单,这里的user指向的是rootReducer中的user，会将redux
     // 中user部分数据默认以localstorage（引入storage默认）的形式保存起来
-    whiteList:['user']
+    whiteList: ['user']
     // 同一时间只需黑白名单中的一个，或者全都不要
 }
 
@@ -47,7 +47,7 @@ const store = configureStore({
         actionLanguage
     ],
     // 可以打开redux devtools
-    devTools: false 
+    devTools: false
 })
 
 const persistor = persistStore(store);

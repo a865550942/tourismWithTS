@@ -15,68 +15,68 @@ const initialState: ShoppingCartState = {
 
 export const getShoppingCart = createAsyncThunk(
     "shoppingCart/getShoppingCart",
-   async (jwt: string, thunkAPI) => {
-       const { data } = await axios.get(
-           'http://123.56.149.216:8080/api/shoppingCart',
-           {
-               headers:{
-                   Authorization: `bearer${jwt}`
-               }
-           }
-       )
-       return data.shoppingCartItems;
-   }
+    async (jwt: string, thunkAPI) => {
+        const { data } = await axios.get(
+            'http://123.56.149.216:8080/api/shoppingCart',
+            {
+                headers: {
+                    Authorization: `bearer${jwt}`
+                }
+            }
+        )
+        return data.shoppingCartItems;
+    }
 )
 
 export const addShoppingCartItem = createAsyncThunk(
     'shoppingCart/addShoppingCartItem',
-    async (params: {touristRouteId: string, jwt: string}, thunkAPI) => {
+    async (params: { touristRouteId: string, jwt: string }, thunkAPI) => {
         const { data } = await axios.post('http://123.56.149.216:8080/api/shoppingCart/items',
-        {
-            touristRouteId: params.touristRouteId,
-        },
-        {
-            headers: {
-                Authorization:  `bearer ${params.jwt}`
+            {
+                touristRouteId: params.touristRouteId,
             },
-        })
+            {
+                headers: {
+                    Authorization: `bearer ${params.jwt}`
+                },
+            })
         return data.shoppingCartItems;
     }
 );
 
 export const clearShoppingCartItem = createAsyncThunk(
     'shoppingCart/clearShoppingCart',
-   async (params:{jwt: string, itemIds: number[]}, thunkAPI) => {
-       console.log("打印删除购物车参数",params)
+    async (params: { jwt: string, itemIds: number[] }, thunkAPI) => {
+        console.log("打印删除购物车参数", params)
         // 由于返回是204没有content，所以直接将axios调用返回即可
-        return await axios.delete(`http://123.56.149.216:8080/api/shoppingCart/items/(${params.itemIds.join(",")})`,{
+        return await axios.delete(`http://123.56.149.216:8080/api/shoppingCart/items/(${params.itemIds.join(",")})`, {
             headers: {
                 Authorization: `bearer ${params.jwt}`
             }
         })
-   }
+    }
 )
 
 export const checkout = createAsyncThunk(
     'shoppingCart/checkout',
-   async (jwt: string, thunkAPI) => {
+    async (jwt: string, thunkAPI) => {
         // 由于返回是204没有content，所以直接将axios调用返回即可
         const { data } = await axios.post(`http://123.56.149.216:8080/api/shoppingCart/checkout`,
-        null,
-        {
-            headers: {
-                Authorization: `bearer ${jwt}`
-            }
-        });
+            null,
+            {
+                headers: {
+                    Authorization: `bearer ${jwt}`
+                }
+            });
         return data;
-   }
+    }
 )
 
 export const shoppingCartSlice = createSlice({
     name: 'shoppingCart',
     initialState,
-    reducers:{},
-    extraReducers:{
+    reducers: {},
+    extraReducers: {
         [getShoppingCart.pending.type]: (state) => {
             state.loading = true;
         },
